@@ -18,38 +18,40 @@ import java.util.HashMap;
 
 
 public class Main extends Application {
-    private int height = 48, width = 48;
+    private final int height = 48;
+    private final int width = 48;
     private final boolean gameStarted = true;
     private final int start = 0;
     private HashMap<KeyCode, Boolean> keys = new HashMap<>();
+    private GraphicsContext gc;
 
     Player player = new Player();
     Coin coin = new Coin();
 
     Image coinImg = new Image("roflan.png", height, width, false, false);
     Image grass = new Image("/grass.png", height, width, false, false);
+    Image grassS = new Image("/grassS.png", height, width, false, false);
     Image tree = new Image("/tree.png", height, width, false, false);
 
-    private int[][] map = {
-            {1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,},
+    private int[][] map = {                                         //0 - трава
+            {1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,},      //1- дерево
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,},      //2 - трава с камнями
+            {1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1,},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0,},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,},
+            {1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1,},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,},
             {1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,},
     };
 
-    private GraphicsContext gc;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -76,6 +78,7 @@ public class Main extends Application {
             keys.put(event.getCode(), false);
         });
 
+//        player.playerDraw(gc);
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -86,12 +89,13 @@ public class Main extends Application {
     }
 
     private void textSettings() {
-        gc.setFill(Color.BLACK);
+        gc.setFill(Color.BLACK);            //ЧЕРНЫЙ ФОН
         gc.fillRect(0, 0, 1000, 1000);
         gc.setFont(Font.font(48));
-        gc.setFill(Color.WHITE);
+
+        gc.setFill(Color.WHITE);            //КОЛИЧЕСТВО МОНЕТ
         gc.drawImage(coinImg, 0, 770);
-        gc.fillText(toString(coin.getCoins()), 0, 810); //КОЛИЧЕСТВО МОНЕТ
+        gc.fillText(toString(coin.getCoins()), 0, 810);
     }
 
     private void run(Scene scene) {
@@ -99,9 +103,10 @@ public class Main extends Application {
             textSettings();
             drawBackground();
             coin.generate(gc);
-            player.playerDraw(gc);
-            player.playerInput(scene, gc);
             coin.gotCoin(gc);
+            player.playerInput(scene, gc);
+            player.playerDraw(gc);
+            player.shootPressed(gc);
         } else
             ;
     }
@@ -112,14 +117,14 @@ public class Main extends Application {
             for (int j = 0; j < 16; j++) {
                 if (map[i][j] == 0)
                     gc.drawImage(grass, i * height, j * width);
-                else gc.drawImage(tree, i * height, j * width);
+                else if (map[i][j] == 1)
+                    gc.drawImage(tree, i * height, j * width);
+                else if (map[i][j] == 2)
+                    gc.drawImage(grassS, i * height, j * width);
             }
         }
     }
 
-    public GraphicsContext getGraphics() {
-        return gc;
-    }
 
     private String toString(int coins) {
         return "   X" + coins;
