@@ -3,43 +3,70 @@ package com.example.test;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static java.lang.Math.abs;
 
 public class Enemy extends Actor {
-    Image gnome = new Image("/enemy.png", height, width, false, false);
-    List<Enemy> enemyList = new ArrayList<>();
-    private int speed;
+    Image skelly = new Image("/skelly.png", height, width, false, false);
+    private final int speed;
     private int afterHit;
+    private boolean alive = true;
+
     public Enemy() {
-        speed = 16;
-        positionX = 850;
-        positionY = 360;
+        positionX = 20;
+        positionY = 380;
+        speed = 1;
     }
 
-    public void enemyHit(){
+    public void enemyLogic(GraphicsContext gc, Player player) {
+        if (alive) {
+            drawEnemy(gc);
+            enemyMove();
+            deadCheck();
+        }
+    }
+
+    public void deadCheck() {
+        if (abs(Player.getBulletX() - positionX) < 32 && abs(Player.getBulletY() - positionY) < 32) {
+            alive = false;
+        }
+    }
+
+    public void drawEnemy(GraphicsContext gc) {
+        gc.drawImage(skelly, positionX, positionY);
+    }
+
+    public void enemyMove() {
+        if (Player.getPositionX() < getX()) {
+            positionX -= speed;
+        } else if (Player.getPositionX() > getX())
+            positionX += speed;
+        if (abs(Player.getPositionX() - getX()) < 16 && abs(Player.getPositionY() - getY()) < 32) {
+            enemyHit();
+        }
+        if (Player.getPositionY() < getY()) {
+            positionY -= speed;
+        } else if (Player.getPositionY() > getY()) {
+            positionY += speed;
+        }
+    }
+
+    public void enemyHit() {
         afterHit = Player.getLives() - 1;
         Player.setLives(afterHit);
     }
 
-    public void enemyMove() {
-        if (abs(Player.getPositionX() - getX()) > 16) {
-            positionX += speed;
-        }
-        else
-            enemyHit();
-        if (abs(Player.getPositionY() - getY()) > 16) {
-            positionY += speed;
-        }
-        else
-            enemyHit();
+    private void generateEnemy4() {
+        Enemy e1 = new Enemy();
+        e1.setPosition(860, 360);
+        Enemy e2 = new Enemy();
+        e2.setPosition(50, 360);
+        Enemy e3 = new Enemy();
+        e3.setPosition(360, 860);
+        Enemy e4 = new Enemy();
+        e4.setPosition(860, 360);
     }
 
     public void enemySpawn4(GraphicsContext gc) {
-
-        enemyList.add(new Enemy());
-        gc.drawImage(gnome, positionX, positionY);
+        gc.drawImage(skelly, positionX, positionY);
     }
 }

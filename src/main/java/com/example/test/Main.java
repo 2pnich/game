@@ -14,7 +14,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class Main extends Application {
@@ -24,14 +26,16 @@ public class Main extends Application {
     private final int start = 0;
     private HashMap<KeyCode, Boolean> keys = new HashMap<>();
     private GraphicsContext gc;
-
+    private final int level = 0;
+    List<Enemy> enemyList = new ArrayList<>();
     Player player = new Player();
     Coin coin = new Coin();
-
+    Enemy e1 = new Enemy();
     Image coinImg = new Image("roflan.png", height, width, false, false);
     Image grass = new Image("/grass.png", height, width, false, false);
     Image grassS = new Image("/grassS.png", height, width, false, false);
     Image tree = new Image("/tree.png", height, width, false, false);
+    Image live = new Image("/Plives.png", height, width, false, false);
 
     private int[][] map = {                                         //0 - трава
             {1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,},      //1- дерево
@@ -51,7 +55,6 @@ public class Main extends Application {
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,},
             {1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,},
     };
-
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -77,7 +80,6 @@ public class Main extends Application {
         scene.setOnKeyReleased(event -> {
             keys.put(event.getCode(), false);
         });
-
 //        player.playerDraw(gc);
         AnimationTimer timer = new AnimationTimer() {
             @Override
@@ -96,6 +98,11 @@ public class Main extends Application {
         gc.setFill(Color.WHITE);            //КОЛИЧЕСТВО МОНЕТ
         gc.drawImage(coinImg, 0, 770);
         gc.fillText(toString(coin.getCoins()), 0, 810);
+
+        gc.setFill(Color.WHITE);
+        gc.drawImage(live, 380, 770);
+        gc.fillText(toString(Player.getLives()), 400, 810);
+
     }
 
     private void run(Scene scene) {
@@ -107,6 +114,7 @@ public class Main extends Application {
             player.playerInput(scene, gc);
             player.playerDraw(gc);
             player.shootPressed(gc);
+            e1.enemyLogic(gc, player);
         } else
             ;
     }

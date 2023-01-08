@@ -21,6 +21,11 @@ public class Actor {
         return positionY;
     }
 
+    public void setPosition(double x, double y) {
+        positionX = x;
+        positionY = y;
+    }
+
     public double getWidth() {
         return width;
     }

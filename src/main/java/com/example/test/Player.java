@@ -18,15 +18,16 @@ public class Player extends Actor {
     private static int lives;
     private static int positionY = 512;
     private static int positionX = 512;
-    private int bulletX;
-    private int bulletY;
+    private static int bulletX;
+    private static int bulletY;
+    private Boolean shootPressed = false;
     String[] dir = {"", "", "", ""};
-    String[] dirB = {"", "", "", ""};
+    String dirB = "";
     enum bulletDir {UP, DOWN, LEFT, RIGHT}
 
     Image player = new Image("player.png", height, width, false, false);
     Image playerL = new Image("player_b.png", height, width, false, false);
-    List<Image> bullet = new ArrayList<>();
+    Image bullet = new Image("bullet.png", 7, 7, false, false);
 
     public Player() {
 //        animTimer = 0;
@@ -38,69 +39,64 @@ public class Player extends Actor {
 
     public void bulletMoveUp(GraphicsContext gc) {
         bulletY -= bulletSpeed;
-        gc.setFill(Color.BLACK);
-        gc.fillRect(bulletX, bulletY, 3, 5);
+        gc.drawImage(bullet, bulletX, bulletY);
     }
 
     public void bulletMoveDown(GraphicsContext gc) {
         bulletY += bulletSpeed;
-        gc.setFill(Color.BLACK);
-        gc.fillRect(bulletX, bulletY, 3, 5);
+        gc.drawImage(bullet, bulletX, bulletY);
     }
 
     public void bulletMoveLeft(GraphicsContext gc) {
         bulletX -= bulletSpeed;
-        gc.setFill(Color.BLACK);
-        gc.fillRect(bulletX, bulletY, 3, 5);
+        gc.drawImage(bullet, bulletX, bulletY);
     }
 
     public void bulletMoveRight(GraphicsContext gc) {
         bulletX += bulletSpeed;
-        gc.setFill(Color.BLACK);
-        gc.fillRect(bulletX, bulletY, 3, 5);
+        gc.drawImage(bullet, bulletX, bulletY);
     }
 
     public void setBulletStart() {
         bulletX = positionX;
-        bulletY = positionY;
+        bulletY = positionY + 10;
     }
 
-    public void shootPressed(GraphicsContext gc) {
-        if (Objects.equals(dirB[0], "UP")) {
-            gc.setFill(Color.BLACK);
+    public void shootPressed(GraphicsContext gc) {        //ОТРИСОВКА ПУЛИ И ПРОВЕРКА НАПРАВЛЕНИЯ
+        if (Objects.equals(dirB, "UP")) {
             setBulletStart();
-            gc.fillRect(positionX, positionY, 3, 5);
-            dirB[0] = "SU";
+            gc.drawImage(bullet, bulletX, bulletY);
+            dirB = "SU";
         }
-        else if (Objects.equals(dirB[0], "SU") && !Objects.equals(dirB[1], "SD"))
+//        && !Objects.equals(dirB[1], "SD")
+        else if (Objects.equals(dirB, "SU")) {
             bulletMoveUp(gc);
-
-        if (Objects.equals(dirB[1], "DOWN")) {
-            gc.setFill(Color.BLACK);
-            setBulletStart();
-            gc.fillRect(positionX, positionY, 3, 5);
-            dirB[1] = "SD";
         }
-        else if (Objects.equals(dirB[1], "SD") && !Objects.equals(dirB[0], "SU"))
+
+        if (Objects.equals(dirB, "DOWN")) {
+            setBulletStart();
+            gc.drawImage(bullet, bulletX, bulletY);
+            dirB = "SD";
+        }
+        else if (Objects.equals(dirB, "SD"))
             bulletMoveDown(gc);
 
-        if (Objects.equals(dirB[2], "LEFT")) {
-            gc.setFill(Color.BLACK);
+        if (Objects.equals(dirB, "RIGHT")) {
             setBulletStart();
-            gc.fillRect(positionX, positionY, 5, 3);
-            dirB[2] = "SL";
+            gc.drawImage(bullet, bulletX, bulletY);
+            dirB = "SR";
         }
-        else if (Objects.equals(dirB[2], "SL"))
+        else if (Objects.equals(dirB, "SR"))
+            bulletMoveRight(gc);
+
+        if (Objects.equals(dirB, "LEFT")) {
+            setBulletStart();
+            gc.drawImage(bullet, bulletX, bulletY);
+            dirB = "SL";
+        }
+        else if (Objects.equals(dirB, "SL"))
             bulletMoveLeft(gc);
 
-        if (Objects.equals(dirB[3], "RIGHT")) {
-            gc.setFill(Color.BLACK);
-            setBulletStart();
-            gc.fillRect(positionX, positionY, 5, 3);
-            dirB[3] = "SR";
-        }
-        else if (Objects.equals(dirB[3], "SR"))
-            bulletMoveRight(gc);
     }
 
     public void playerDraw(GraphicsContext gc) {
@@ -155,14 +151,25 @@ public class Player extends Actor {
                     dir[2] = "";
                 }
                 //Стрельба
-                if (code == KeyCode.UP)
-                    dirB[0] = "UP";
-                if (code == KeyCode.DOWN)
-                    dirB[1] = "DOWN";
-                if (code == KeyCode.LEFT)
-                    dirB[2] = "LEFT";
+                if (code == KeyCode.UP) {
+                    dirB = "UP";
+                    shootPressed = true;
+                }
+                if (code == KeyCode.DOWN) {
+                    dirB = "DOWN";
+                    shootPressed = true;
+                }
+                if (code == KeyCode.LEFT) {
+                    dirB = "LEFT";
+                    dir[3] = "L";
+                    dir[2] = "";
+                    shootPressed = true;
+                }
                 if (code == KeyCode.RIGHT) {
-                    dirB[3] = "RIGHT";
+                    dirB = "RIGHT";
+                    dir[2] = "R";
+                    dir[3] = "";
+                    shootPressed = true;
                 }
             }
         });
@@ -174,6 +181,14 @@ public class Player extends Actor {
 
     static int getLives() {
         return lives;
+    }
+
+    static int getBulletX() {
+        return bulletX;
+    }
+
+    static int getBulletY() {
+        return bulletY;
     }
 
     static int getPositionX() {
