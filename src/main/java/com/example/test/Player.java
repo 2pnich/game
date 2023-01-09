@@ -23,7 +23,7 @@ public class Player extends Actor {
     private Boolean shootPressed = false;
     String[] dir = {"", "", "", ""};
     String dirB = "";
-    enum bulletDir {UP, DOWN, LEFT, RIGHT}
+    private boolean enemyKilled;
 
     Image player = new Image("player.png", height, width, false, false);
     Image playerL = new Image("player_b.png", height, width, false, false);
@@ -68,7 +68,6 @@ public class Player extends Actor {
             gc.drawImage(bullet, bulletX, bulletY);
             dirB = "SU";
         }
-//        && !Objects.equals(dirB[1], "SD")
         else if (Objects.equals(dirB, "SU")) {
             bulletMoveUp(gc);
         }

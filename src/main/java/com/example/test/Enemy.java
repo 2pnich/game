@@ -10,14 +10,13 @@ public class Enemy extends Actor {
     private final int speed;
     private int afterHit;
     private boolean alive = true;
+    private boolean hited = false;
 
     public Enemy() {
-        positionX = 20;
-        positionY = 380;
         speed = 1;
     }
 
-    public void enemyLogic(GraphicsContext gc, Player player) {
+    public void enemyLogic(GraphicsContext gc) {
         if (alive) {
             drawEnemy(gc);
             enemyMove();
@@ -40,33 +39,25 @@ public class Enemy extends Actor {
             positionX -= speed;
         } else if (Player.getPositionX() > getX())
             positionX += speed;
-        if (abs(Player.getPositionX() - getX()) < 16 && abs(Player.getPositionY() - getY()) < 32) {
-            enemyHit();
-        }
         if (Player.getPositionY() < getY()) {
             positionY -= speed;
         } else if (Player.getPositionY() > getY()) {
             positionY += speed;
         }
+        if (abs(Player.getPositionX() - getX()) < 16 && abs(Player.getPositionY() - getY()) < 32) {
+            enemyHit();
+        }
     }
 
     public void enemyHit() {
-        afterHit = Player.getLives() - 1;
-        Player.setLives(afterHit);
+        if (!hited) {
+            afterHit = Player.getLives() - 1;
+            Player.setLives(afterHit);
+            hited = true;
+        }
     }
 
-    private void generateEnemy4() {
-        Enemy e1 = new Enemy();
-        e1.setPosition(860, 360);
-        Enemy e2 = new Enemy();
-        e2.setPosition(50, 360);
-        Enemy e3 = new Enemy();
-        e3.setPosition(360, 860);
-        Enemy e4 = new Enemy();
-        e4.setPosition(860, 360);
-    }
-
-    public void enemySpawn4(GraphicsContext gc) {
-        gc.drawImage(skelly, positionX, positionY);
+    public boolean getState() {
+        return alive;
     }
 }

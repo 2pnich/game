@@ -2,10 +2,13 @@ package com.example.test;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -22,15 +25,15 @@ import java.util.List;
 public class Main extends Application {
     private final int height = 48;
     private final int width = 48;
-    private final boolean gameStarted = true;
+    private boolean gameStarted = true;
     private final int start = 0;
     private HashMap<KeyCode, Boolean> keys = new HashMap<>();
     private GraphicsContext gc;
     private final int level = 0;
+    boolean flag = false;
     List<Enemy> enemyList = new ArrayList<>();
     Player player = new Player();
     Coin coin = new Coin();
-    Enemy e1 = new Enemy();
     Image coinImg = new Image("roflan.png", height, width, false, false);
     Image grass = new Image("/grass.png", height, width, false, false);
     Image grassS = new Image("/grassS.png", height, width, false, false);
@@ -75,19 +78,23 @@ public class Main extends Application {
         gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, 1000, 1000);
+//
+//        scene.setOnKeyPressed(event -> keys.put(event.getCode(), true));
+//        scene.setOnKeyReleased(event -> {
+//            keys.put(event.getCode(), false);
+//        });
+        enemySpawn4();
 
-        scene.setOnKeyPressed(event -> keys.put(event.getCode(), true));
-        scene.setOnKeyReleased(event -> {
-            keys.put(event.getCode(), false);
-        });
-//        player.playerDraw(gc);
-        AnimationTimer timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                run(scene);
-            }
-        };
-        timer.start();
+
+        if (gameStarted) {
+            AnimationTimer timer = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    run(scene);
+                }
+            };
+            timer.start();
+        }
     }
 
     private void textSettings() {
@@ -99,7 +106,7 @@ public class Main extends Application {
         gc.drawImage(coinImg, 0, 770);
         gc.fillText(toString(coin.getCoins()), 0, 810);
 
-        gc.setFill(Color.WHITE);
+        gc.setFill(Color.WHITE);            //КОЛИЧЕСТВО ЖИЗНЕЙ
         gc.drawImage(live, 380, 770);
         gc.fillText(toString(Player.getLives()), 400, 810);
 
@@ -114,9 +121,35 @@ public class Main extends Application {
             player.playerInput(scene, gc);
             player.playerDraw(gc);
             player.shootPressed(gc);
-            e1.enemyLogic(gc, player);
+           enemyControl();
         } else
             ;
+    }
+
+    private void enemyControl() {
+        for (int i = 0; i < 4; i++) {
+            enemyList.get(i).enemyLogic(gc);
+        }
+        if (!enemyList.get(0).getState() && !enemyList.get(1).getState()
+                && !enemyList.get(2).getState() && !enemyList.get(3).getState()) {
+            enemyList.clear();
+            enemySpawn4();
+        }
+    }
+
+    private void enemySpawn4() {
+        Enemy e1 = new Enemy();
+        e1.setPosition(0, 360);
+        enemyList.add(e1);
+        Enemy e2 = new Enemy();
+        e2.setPosition(360, 0);
+        enemyList.add(e2);
+        Enemy e3 = new Enemy();
+        e3.setPosition(360, 860);
+        enemyList.add(e3);
+        Enemy e4 = new Enemy();
+        e4.setPosition(860, 360);
+        enemyList.add(e4);
     }
 
     private void drawBackground() {
@@ -132,7 +165,6 @@ public class Main extends Application {
             }
         }
     }
-
 
     private String toString(int coins) {
         return "   X" + coins;
