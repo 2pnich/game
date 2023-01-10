@@ -20,18 +20,16 @@ public class Player extends Actor {
     private static int positionX = 512;
     private static int bulletX;
     private static int bulletY;
+    private static boolean bulletHit = false;
     private Boolean shootPressed = false;
     String[] dir = {"", "", "", ""};
     String dirB = "";
-    private boolean enemyKilled;
 
     Image player = new Image("player.png", height, width, false, false);
     Image playerL = new Image("player_b.png", height, width, false, false);
     Image bullet = new Image("bullet.png", 7, 7, false, false);
 
     public Player() {
-//        animTimer = 0;
-//        animSpeed = 0;
         bulletSpeed = 16;
         lives = 3;
         speed = 32;
@@ -68,7 +66,7 @@ public class Player extends Actor {
             gc.drawImage(bullet, bulletX, bulletY);
             dirB = "SU";
         }
-        else if (Objects.equals(dirB, "SU")) {
+        else if (Objects.equals(dirB, "SU") && !bulletHit) {
             bulletMoveUp(gc);
         }
 
@@ -77,7 +75,7 @@ public class Player extends Actor {
             gc.drawImage(bullet, bulletX, bulletY);
             dirB = "SD";
         }
-        else if (Objects.equals(dirB, "SD"))
+        else if (Objects.equals(dirB, "SD") && !bulletHit)
             bulletMoveDown(gc);
 
         if (Objects.equals(dirB, "RIGHT")) {
@@ -85,7 +83,7 @@ public class Player extends Actor {
             gc.drawImage(bullet, bulletX, bulletY);
             dirB = "SR";
         }
-        else if (Objects.equals(dirB, "SR"))
+        else if (Objects.equals(dirB, "SR") && !bulletHit)
             bulletMoveRight(gc);
 
         if (Objects.equals(dirB, "LEFT")) {
@@ -93,7 +91,7 @@ public class Player extends Actor {
             gc.drawImage(bullet, bulletX, bulletY);
             dirB = "SL";
         }
-        else if (Objects.equals(dirB, "SL"))
+        else if (Objects.equals(dirB, "SL") && !bulletHit)
             bulletMoveLeft(gc);
 
     }
@@ -153,25 +151,33 @@ public class Player extends Actor {
                 if (code == KeyCode.UP) {
                     dirB = "UP";
                     shootPressed = true;
+                    bulletHit = false;
                 }
                 if (code == KeyCode.DOWN) {
                     dirB = "DOWN";
                     shootPressed = true;
+                    bulletHit = false;
                 }
                 if (code == KeyCode.LEFT) {
                     dirB = "LEFT";
                     dir[3] = "L";
                     dir[2] = "";
                     shootPressed = true;
+                    bulletHit = false;
                 }
                 if (code == KeyCode.RIGHT) {
                     dirB = "RIGHT";
                     dir[2] = "R";
                     dir[3] = "";
                     shootPressed = true;
+                    bulletHit = false;
                 }
             }
         });
+    }
+
+    public void setBulletHit() {
+        bulletHit = true;
     }
 
     static void setLives(int Lives) {

@@ -16,17 +16,19 @@ public class Enemy extends Actor {
         speed = 1;
     }
 
-    public void enemyLogic(GraphicsContext gc) {
+    public void enemyLogic(GraphicsContext gc, Player player) {
         if (alive) {
             drawEnemy(gc);
             enemyMove();
-            deadCheck();
+            deadCheck(player);
         }
     }
 
-    public void deadCheck() {
+    public void deadCheck(Player player) {
         if (abs(Player.getBulletX() - positionX) < 32 && abs(Player.getBulletY() - positionY) < 32) {
             alive = false;
+            player.setBulletHit();
+            player.setBulletStart();
         }
     }
 
