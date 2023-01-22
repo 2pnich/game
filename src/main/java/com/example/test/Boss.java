@@ -4,12 +4,19 @@ import javafx.scene.image.Image;
 
 public class Boss extends Enemy{
 
-    private int health;
+    static int health;
 
     public Boss() {
-        speed = 0.005;
+        speed = 0.05;
         alive = true;
-        health = 10;
+        health = 5;
     }
 
+    static void healthMinus() {
+        health--;
+    }
+
+    static int getHealth() {
+        return health;
+    }
 }

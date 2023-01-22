@@ -30,13 +30,12 @@ public class Main extends Application {
     private GraphicsContext gc;
     private int level = 1;
     private boolean bossSpawned = false;
+    private String entity;
     ArrayList<Boss> boss = new ArrayList<Boss>();
     List<Enemy> enemyList = new ArrayList<>();
     Player player = new Player();
     Coin coin = new Coin();
 
-    Image pudge = new Image("/boss.png", 100, 100, false, false);
-    Image skelly = new Image("/skelly.png", 32, 32, false, false);
     Image lose = new Image("lose.png", 768, 100, false, false);
     Image menu = new Image("start_men.png", 768, 860, false, false);
     Image but = new Image("button.png", 140, 80, false, false);
@@ -83,7 +82,6 @@ public class Main extends Application {
         button.setLayoutX(300);
         button.setLayoutY(400);
 
-
         Group root = new Group();
         Canvas canvas = new Canvas(768, 860);
         root.getChildren().add(imageV);
@@ -108,7 +106,6 @@ public class Main extends Application {
             }
         };
         button.setOnAction(ev);
-
     }
 
     private void textSettings() {
@@ -142,23 +139,25 @@ public class Main extends Application {
 
     private void enemyControl() {
         ArrayList<Enemy> deadEnemy = new ArrayList<Enemy>();
-
-        for (Enemy enemy : enemyList) {
+        for (Enemy enemy : enemyList) {           //ЛОГИКА ПРОТИВНИКОВ
             if (enemy.getState())
-                enemy.enemyLogic(gc, player, skelly);
+                enemy.enemyLogic(gc, player, "0");
 
-            if (bossSpawned)
-                boss.get(0).enemyLogic(gc, player, pudge);
-
+            if (bossSpawned) {
+                entity = "boss";
+                boss.get(0).enemyLogic(gc, player, entity);
+            }
             if (!enemy.getState()) {
                 deadEnemy.add(enemy);
             }
         }
 
-        if (enemyList.size() == deadEnemy.size())
+        //ЕСЛИ ВСЕ МЕРТВЫ -ОЧИСТКА
+        if (enemyList.size() == deadEnemy.size()) {
             enemyList.clear();
+        }
 
-        //deadEnemy.size() == 4)
+        //ЛВЛ 2
         if (level == 1 && enemyList.isEmpty()) {
             level++;
             deadEnemy.clear();
@@ -167,14 +166,17 @@ public class Main extends Application {
             enemySpawn6();
         }
 
-        if (level == 2 && enemyList.isEmpty()) {
+        //ЛВЛ 3(БОСС)
+        if (level % 2 == 0 && enemyList.isEmpty()) {
             level++;
             if (!bossSpawned) {
                 bossSpawn();
             }
         }
 
+        //>ЛВЛ 3
         if (level > 2 && enemyList.isEmpty()) {
+            level++;
             if (deadEnemy.size() > 9) {
                 deadEnemy.clear();
             }
@@ -187,7 +189,7 @@ public class Main extends Application {
         Boss boss1 = new Boss();
         boss1.setPosition(0, 360);
         boss.add(boss1);
-        boss1.enemyLogic(gc, player, pudge);
+        boss1.enemyLogic(gc, player, "boss");
         bossSpawned = true;
     }
 

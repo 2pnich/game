@@ -98,7 +98,7 @@ public class Player extends Actor {
     }
 
     public void playerDraw(GraphicsContext gc) {
-        if (Objects.equals(dir[3], "L")) {
+        if (Objects.equals(dir[3], "L")) {          //НАЖАТА 'A' - спрайт смотрит влево
             gc.drawImage(playerL, positionX, positionY);
         }
         if (Objects.equals(dir[2], "R")) {
@@ -176,7 +176,6 @@ public class Player extends Actor {
             }
         });
     }
-
 
     public void setBulletCord() {
         bulletX = 0;
