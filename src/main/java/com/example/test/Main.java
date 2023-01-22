@@ -28,10 +28,16 @@ public class Main extends Application {
     private final int width = 48;
     private HashMap<KeyCode, Boolean> keys = new HashMap<>();
     private GraphicsContext gc;
-    private final int level = 0;
+    private int level = 1;
+    private boolean bossSpawned = false;
+    ArrayList<Boss> boss = new ArrayList<Boss>();
     List<Enemy> enemyList = new ArrayList<>();
     Player player = new Player();
     Coin coin = new Coin();
+
+    Image pudge = new Image("/boss.png", 100, 100, false, false);
+    Image skelly = new Image("/skelly.png", 32, 32, false, false);
+    Image lose = new Image("lose.png", 768, 100, false, false);
     Image menu = new Image("start_men.png", 768, 860, false, false);
     Image but = new Image("button.png", 140, 80, false, false);
     Image coinImg = new Image("roflan.png", height, width, false, false);
@@ -77,6 +83,7 @@ public class Main extends Application {
         button.setLayoutX(300);
         button.setLayoutY(400);
 
+
         Group root = new Group();
         Canvas canvas = new Canvas(768, 860);
         root.getChildren().add(imageV);
@@ -88,8 +95,7 @@ public class Main extends Application {
 
         gc = canvas.getGraphicsContext2D();
         enemySpawn4();
-
-        EventHandler<ActionEvent> ev = new EventHandler<ActionEvent>() {
+        EventHandler<ActionEvent> ev = new EventHandler<ActionEvent>() {    //КНОПКА СТАРТ
             public void handle(ActionEvent e) {
                 AnimationTimer timer = new AnimationTimer() {
                     @Override
@@ -102,6 +108,7 @@ public class Main extends Application {
             }
         };
         button.setOnAction(ev);
+
     }
 
     private void textSettings() {
@@ -115,29 +122,73 @@ public class Main extends Application {
 
         gc.setFill(Color.WHITE);            //КОЛИЧЕСТВО ЖИЗНЕЙ
         gc.drawImage(live, 380, 770);
-        gc.fillText(toString(Player.getLives()), 400, 810);
+        gc.fillText(toString(player.getLives()), 400, 810);
     }
 
     private void run(Scene scene) {        //ИГРОВОЙ ЦИКЛ
-        textSettings();
-        drawBackground();
-        coin.generate(gc);
-        coin.gotCoin(gc);
-        player.playerInput(scene, gc);
-        player.playerDraw(gc);
-        player.shootPressed(gc);
-        enemyControl();
+        if (player.getLives() > 0) {
+            textSettings();
+            drawBackground();
+            coin.generate(gc);
+            coin.gotCoin(gc);
+            player.playerInput(scene, gc);
+            player.playerDraw(gc);
+            player.shootPressed(gc);
+            enemyControl();
+        } else {
+            gc.drawImage(lose, 0, 350);
+        }
     }
 
     private void enemyControl() {
-        for (int i = 0; i < 4; i++) {
-            enemyList.get(i).enemyLogic(gc, player);
+        ArrayList<Enemy> deadEnemy = new ArrayList<Enemy>();
+
+        for (Enemy enemy : enemyList) {
+            if (enemy.getState())
+                enemy.enemyLogic(gc, player, skelly);
+
+            if (bossSpawned)
+                boss.get(0).enemyLogic(gc, player, pudge);
+
+            if (!enemy.getState()) {
+                deadEnemy.add(enemy);
+            }
         }
-        if (!enemyList.get(0).getState() && !enemyList.get(1).getState() //ПРОВЕРКА ЖИВЫ ЛИ ВРАГИ, ЕСЛИ НЕТ - СПАВН
-                && !enemyList.get(2).getState() && !enemyList.get(3).getState()) {
+
+        if (enemyList.size() == deadEnemy.size())
             enemyList.clear();
+
+        //deadEnemy.size() == 4)
+        if (level == 1 && enemyList.isEmpty()) {
+            level++;
+            deadEnemy.clear();
+//            enemyList.clear();
             enemySpawn4();
+            enemySpawn6();
         }
+
+        if (level == 2 && enemyList.isEmpty()) {
+            level++;
+            if (!bossSpawned) {
+                bossSpawn();
+            }
+        }
+
+        if (level > 2 && enemyList.isEmpty()) {
+            if (deadEnemy.size() > 9) {
+                deadEnemy.clear();
+            }
+            enemySpawn4();
+            enemySpawn6();
+        }
+    }
+
+    private void bossSpawn() {
+        Boss boss1 = new Boss();
+        boss1.setPosition(0, 360);
+        boss.add(boss1);
+        boss1.enemyLogic(gc, player, pudge);
+        bossSpawned = true;
     }
 
     private void enemySpawn4() {
@@ -153,6 +204,27 @@ public class Main extends Application {
         Enemy e4 = new Enemy();
         e4.setPosition(860, 360);
         enemyList.add(e4);
+    }
+
+    private void enemySpawn6() {
+        Enemy e5 = new Enemy();
+        e5.setPosition(0, 280);
+        enemyList.add(e5);
+        Enemy e6 = new Enemy();
+        e6.setPosition(280, 0);
+        enemyList.add(e6);
+        Enemy e7 = new Enemy();
+        e7.setPosition(280, 830);
+        enemyList.add(e7);
+        Enemy e8 = new Enemy();
+        e8.setPosition(750, 200);
+        enemyList.add(e8);
+        Enemy e9 = new Enemy();
+        e9.setPosition(650, 200);
+        enemyList.add(e9);
+        Enemy e10 = new Enemy();
+        e10.setPosition(600, 200);
+        enemyList.add(e10);
     }
 
     private void drawBackground() {

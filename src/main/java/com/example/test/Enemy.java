@@ -6,21 +6,28 @@ import javafx.scene.image.Image;
 import static java.lang.Math.abs;
 
 public class Enemy extends Actor {
-    Image skelly = new Image("/skelly.png", height, width, false, false);
-    private final int speed;
-    private int afterHit;
-    private boolean alive = true;
-    private boolean hited = false;
+    protected double speed;
+    protected int afterHit;
+    protected boolean alive = true;
+    protected boolean hited = false;
 
     public Enemy() {
         speed = 1;
     }
 
-    public void enemyLogic(GraphicsContext gc, Player player) {
+    public void enemyLogic(GraphicsContext gc, Player player, Image img) {
         if (alive) {
-            drawEnemy(gc);
-            enemyMove();
+            drawEnemy(gc, img);
+            enemyMove(player);
             deadCheck(player);
+        }
+    }
+
+    public void enemyHit(Player player) {
+        if (!hited) {
+            afterHit = player.getLives() - 1;
+            player.setLives(afterHit);
+            hited = true;
         }
     }
 
@@ -28,15 +35,15 @@ public class Enemy extends Actor {
         if (abs(Player.getBulletX() - positionX) < 32 && abs(Player.getBulletY() - positionY) < 32) {
             alive = false;
             player.setBulletHit();
-            player.setBulletStart();
+            player.setBulletCord();
         }
     }
 
-    public void drawEnemy(GraphicsContext gc) {
-        gc.drawImage(skelly, positionX, positionY);
+    public void drawEnemy(GraphicsContext gc, Image img) {
+        gc.drawImage(img, positionX, positionY);
     }
 
-    public void enemyMove() {
+    public void enemyMove(Player player) {
         if (Player.getPositionX() < getX()) {
             positionX -= speed;
         } else if (Player.getPositionX() > getX())
@@ -47,15 +54,7 @@ public class Enemy extends Actor {
             positionY += speed;
         }
         if (abs(Player.getPositionX() - getX()) < 16 && abs(Player.getPositionY() - getY()) < 32) {
-            enemyHit();
-        }
-    }
-
-    public void enemyHit() {
-        if (!hited) {
-            afterHit = Player.getLives() - 1;
-            Player.setLives(afterHit);
-            hited = true;
+            enemyHit(player);
         }
     }
 

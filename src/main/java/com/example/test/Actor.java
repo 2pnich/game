@@ -4,7 +4,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 public class Actor {
-    protected Image image; //image that represents the actor
     protected double positionX; //x-coordinate of actor's position
     protected double positionY; //y-coordinate of actor's position
     protected double velocityX; //x value of actor's velocity

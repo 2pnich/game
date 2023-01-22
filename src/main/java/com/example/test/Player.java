@@ -6,6 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.Objects;
 public class Player extends Actor {
     private final int bulletSpeed;
     private final int speed;
-    private static int lives;
+    private int lives;
     private static int positionY = 512;
     private static int positionX = 512;
     private static int bulletX;
@@ -176,15 +177,21 @@ public class Player extends Actor {
         });
     }
 
+
+    public void setBulletCord() {
+        bulletX = 0;
+        bulletY = 0;
+    }
+
     public void setBulletHit() {
         bulletHit = true;
     }
 
-    static void setLives(int Lives) {
+    public void setLives(int Lives) {
         lives = Lives;
     }
 
-    static int getLives() {
+    public int getLives() {
         return lives;
     }
 

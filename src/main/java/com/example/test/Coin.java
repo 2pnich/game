@@ -25,14 +25,6 @@ public class Coin extends Tile {
             positionY = (int) Math.floor(Math.random() * 480) + 20;
             gc.drawImage(coin, positionX, positionY);
         }
-//        int random = (int) Math.floor(Math.random() * 1000);
-//        if (random == 5) {
-//            if (gotCoin) {
-//                positionX = (int) Math.floor(Math.random() * 900);
-//                positionY = (int) Math.floor(Math.random() * 900);
-//                gc.drawImage(coin, positionX, positionY);
-//            }
-//        }
         gotCoin = false;
     }
 
