@@ -3,7 +3,7 @@ package com.example.test;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public class Actor {
+public abstract class Actor {
     protected double positionX; //x-coordinate of actor's position
     protected double positionY; //y-coordinate of actor's position
     protected double velocityX; //x value of actor's velocity

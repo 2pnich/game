@@ -11,7 +11,6 @@ public class Coin extends Tile {
     private int positionY = 128;
     private boolean gotCoin = false;
     Image coin = new Image("roflan.png", height / 2, width / 2, false, false);
-    Image dog = new Image("dog.png", height, width, false, false);
 
     public Coin() {
         count = 0;
@@ -30,7 +29,6 @@ public class Coin extends Tile {
 
     public void gotCoin(GraphicsContext gc) {
         if (abs(Player.getPositionX() - positionX) < 32 && abs(Player.getPositionY() - positionY) < 32) {
-            gc.drawImage(dog, positionX, positionY);
             gotCoin = true;
             count++;
         }

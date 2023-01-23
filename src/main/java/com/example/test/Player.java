@@ -134,11 +134,11 @@ public class Player extends Actor {
                     moveBackY();
                     dir[0] = "W";
                 }
-                if (code == KeyCode.S && (positionY + speed < 960)) {
+                if (code == KeyCode.S && (positionY + speed < 760)) {
                     moveForY();
                     dir[1] = "S";
                 }
-                if (code == KeyCode.D && (positionX + speed < 960)) {
+                if (code == KeyCode.D && (positionX + speed < 760)) {
                     moveForX();
                     dir[2] = "R";
                     dir[3] = "";

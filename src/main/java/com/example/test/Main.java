@@ -118,8 +118,13 @@ public class Main extends Application {
         gc.fillText(toString(coin.getCoins()), 0, 810);
 
         gc.setFill(Color.WHITE);            //КОЛИЧЕСТВО ЖИЗНЕЙ
-        gc.drawImage(live, 380, 770);
-        gc.fillText(toString(player.getLives()), 400, 810);
+        gc.drawImage(live, 550, 770);
+        gc.fillText(toString(player.getLives()), 600, 810);
+
+        gc.setFill(Color.WHITE);            //УРОВЕНЬ
+        gc.fillText("Уровень: ", 150, 810);
+        gc.fillText(toString(level), 330, 810);
+
     }
 
     private void run(Scene scene) {        //ИГРОВОЙ ЦИКЛ
@@ -146,6 +151,8 @@ public class Main extends Application {
             if (bossSpawned) {
                 entity = "boss";
                 boss.get(0).enemyLogic(gc, player, entity);
+                if(!boss.get(0).getState())
+                    bossSpawned = false;
             }
             if (!enemy.getState()) {
                 deadEnemy.add(enemy);
