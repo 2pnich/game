@@ -6,8 +6,11 @@ public class Boss extends Enemy{
 
     static int health;
 
-    public Boss() {
-        speed = 0.05;
+    public Boss(float level) {
+        if(level != 2)
+            speed = 0.05 + level / 10;
+        else
+            speed = 0.05;
         alive = true;
         health = 5;
     }

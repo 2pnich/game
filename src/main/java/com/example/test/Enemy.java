@@ -18,6 +18,12 @@ public class Enemy extends Actor {
     public Enemy() {
         speed = 1;
     }
+    public Enemy(float level) {
+        if (level != 1)
+            speed = 1 + level / 50;
+        else
+            speed = 1;
+    }
 
     public void enemyLogic(GraphicsContext gc, Player player, String entity) {
         if (alive) {

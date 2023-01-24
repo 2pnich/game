@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,8 +29,9 @@ public class Main extends Application {
     private final int width = 48;
     private HashMap<KeyCode, Boolean> keys = new HashMap<>();
     private GraphicsContext gc;
-    private int level = 1;
+    static int level = 1;
     private boolean bossSpawned = false;
+    private boolean pobeda = false;
     private String entity;
     ArrayList<Boss> boss = new ArrayList<Boss>();
     List<Enemy> enemyList = new ArrayList<>();
@@ -66,7 +68,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        stage.setTitle("КАЙФАРИК");                 //ФАВИКОНКА
+        stage.setTitle("КАЙФАРИК by Губарев Штребель Гладков");                 //ФАВИКОНКА
         InputStream iconStream = getClass().getResourceAsStream("/fav.png");
         assert iconStream != null;
         Image image = new Image(iconStream);
@@ -88,6 +90,8 @@ public class Main extends Application {
         root.getChildren().add(button);
         root.getChildren().add(canvas);
         Scene scene = new Scene(root);
+        stage.setMaxWidth(780);
+        stage.setMaxHeight(870);
         stage.setScene(scene);
         stage.show();
 
@@ -137,6 +141,11 @@ public class Main extends Application {
             player.playerDraw(gc);
             player.shootPressed(gc);
             enemyControl();
+            if (coin.getCoins() == 20){
+                gc.setFill(Color.WHITE);
+                gc.setFont(Font.font(60));
+                gc.fillText("ПОБЕДА!!! ", 350, 350);
+            }
         } else {
             gc.drawImage(lose, 0, 350);
         }
@@ -157,33 +166,34 @@ public class Main extends Application {
             if (!enemy.getState()) {
                 deadEnemy.add(enemy);
             }
+            if (!bossSpawned)
+                boss.clear();
         }
 
         //ЕСЛИ ВСЕ МЕРТВЫ -ОЧИСТКА
-        if (enemyList.size() == deadEnemy.size()) {
+        if (enemyList.size() == deadEnemy.size() && !bossSpawned) {
             enemyList.clear();
+            level++;
         }
 
         //ЛВЛ 2
         if (level == 1 && enemyList.isEmpty()) {
-            level++;
             deadEnemy.clear();
-//            enemyList.clear();
             enemySpawn4();
             enemySpawn6();
+
         }
 
         //ЛВЛ 3(БОСС)
         if (level % 2 == 0 && enemyList.isEmpty()) {
-            level++;
             if (!bossSpawned) {
                 bossSpawn();
             }
+            enemySpawn4();
         }
 
         //>ЛВЛ 3
-        if (level > 2 && enemyList.isEmpty()) {
-            level++;
+        if (level >= 3 && enemyList.isEmpty()) {
             if (deadEnemy.size() > 9) {
                 deadEnemy.clear();
             }
@@ -193,7 +203,7 @@ public class Main extends Application {
     }
 
     private void bossSpawn() {
-        Boss boss1 = new Boss();
+        Boss boss1 = new Boss(level);
         boss1.setPosition(0, 360);
         boss.add(boss1);
         boss1.enemyLogic(gc, player, "boss");
@@ -201,37 +211,37 @@ public class Main extends Application {
     }
 
     private void enemySpawn4() {
-        Enemy e1 = new Enemy();
+        Enemy e1 = new Enemy(level);
         e1.setPosition(0, 360);
         enemyList.add(e1);
-        Enemy e2 = new Enemy();
+        Enemy e2 = new Enemy(level);
         e2.setPosition(360, 0);
         enemyList.add(e2);
-        Enemy e3 = new Enemy();
+        Enemy e3 = new Enemy(level);
         e3.setPosition(360, 860);
         enemyList.add(e3);
-        Enemy e4 = new Enemy();
+        Enemy e4 = new Enemy(level);
         e4.setPosition(860, 360);
         enemyList.add(e4);
     }
 
     private void enemySpawn6() {
-        Enemy e5 = new Enemy();
+        Enemy e5 = new Enemy(level);
         e5.setPosition(0, 280);
         enemyList.add(e5);
-        Enemy e6 = new Enemy();
+        Enemy e6 = new Enemy(level);
         e6.setPosition(280, 0);
         enemyList.add(e6);
-        Enemy e7 = new Enemy();
+        Enemy e7 = new Enemy(level);
         e7.setPosition(280, 830);
         enemyList.add(e7);
-        Enemy e8 = new Enemy();
+        Enemy e8 = new Enemy(level);
         e8.setPosition(750, 200);
         enemyList.add(e8);
-        Enemy e9 = new Enemy();
+        Enemy e9 = new Enemy(level);
         e9.setPosition(650, 200);
         enemyList.add(e9);
-        Enemy e10 = new Enemy();
+        Enemy e10 = new Enemy(level);
         e10.setPosition(600, 200);
         enemyList.add(e10);
     }
