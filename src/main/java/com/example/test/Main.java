@@ -31,7 +31,6 @@ public class Main extends Application {
     private GraphicsContext gc;
     static int level = 1;
     private boolean bossSpawned = false;
-    private boolean pobeda = false;
     private String entity;
     ArrayList<Boss> boss = new ArrayList<Boss>();
     List<Enemy> enemyList = new ArrayList<>();

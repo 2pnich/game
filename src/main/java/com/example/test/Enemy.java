@@ -41,10 +41,10 @@ public class Enemy extends Actor {
     }
 
     public void enemyHit(Player player) {
-        if (!hited) {
+        if (!player.getInvincible()) {
             afterHit = player.getLives() - 1;
             player.setLives(afterHit);
-            hited = true;
+            player.setInvincible();
         }
     }
 
@@ -80,7 +80,7 @@ public class Enemy extends Actor {
         } else if (Player.getPositionY() > getY()) {
             positionY += speed;
         }
-        if (abs(Player.getPositionX() - getX()) < 16 && abs(Player.getPositionY() - getY()) < 32) {
+        if (abs(Player.getPositionX() - getX()) < 16 && abs(Player.getPositionY() - getY()) < 16) {
             enemyHit(player);
         }
     }

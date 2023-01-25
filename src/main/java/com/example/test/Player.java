@@ -17,6 +17,7 @@ public class Player extends Actor {
     private final int bulletSpeed;
     private final int speed;
     private int lives;
+    private boolean invincible = false;
     private static int positionY = 512;
     private static int positionX = 512;
     private static int bulletX;
@@ -133,31 +134,37 @@ public class Player extends Actor {
                 if (code == KeyCode.W && (positionY - speed > 0)) {
                     moveBackY();
                     dir[0] = "W";
+                    invincible = false;
                 }
                 if (code == KeyCode.S && (positionY + speed < 760)) {
                     moveForY();
                     dir[1] = "S";
+                    invincible = false;
                 }
                 if (code == KeyCode.D && (positionX + speed < 760)) {
                     moveForX();
                     dir[2] = "R";
                     dir[3] = "";
+                    invincible = false;
                 }
                 if (code == KeyCode.A && (positionX - speed > 0)) {
                     moveBackX();
                     dir[3] = "L";
                     dir[2] = "";
+                    invincible = false;
                 }
                 //Стрельба
                 if (code == KeyCode.UP) {
                     dirB = "UP";
                     shootPressed = true;
                     bulletHit = false;
+                    invincible = false;
                 }
                 if (code == KeyCode.DOWN) {
                     dirB = "DOWN";
                     shootPressed = true;
                     bulletHit = false;
+                    invincible = false;
                 }
                 if (code == KeyCode.LEFT) {
                     dirB = "LEFT";
@@ -165,6 +172,7 @@ public class Player extends Actor {
                     dir[2] = "";
                     shootPressed = true;
                     bulletHit = false;
+                    invincible = false;
                 }
                 if (code == KeyCode.RIGHT) {
                     dirB = "RIGHT";
@@ -172,6 +180,7 @@ public class Player extends Actor {
                     dir[3] = "";
                     shootPressed = true;
                     bulletHit = false;
+                    invincible = false;
                 }
             }
         });
@@ -208,5 +217,13 @@ public class Player extends Actor {
 
     static int getPositionY() {
         return positionY;
+    }
+
+    public boolean getInvincible() {
+        return invincible;
+    }
+
+    public void setInvincible() {
+       invincible = true;
     }
 }
